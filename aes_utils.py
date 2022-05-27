@@ -1,3 +1,4 @@
+from cgitb import text
 from const_tables import *
 
 
@@ -94,8 +95,10 @@ def keyExpansion(cipherKey):
 def getStateMatrix(plaintext):
     l = len(plaintext)*8
     upper_l = math.ceil(l/128)
+    padding_length = 0
     if (l%128 != 0):
-        plaintext += "_" * (upper_l*128 - l)//8
+        padding_length = (upper_l*128 - l)//8
+        plaintext += "_" * padding_length
     bv = BitVector(textstring = plaintext)
     state_matrices = []
     for i in range(upper_l):
@@ -103,7 +106,7 @@ def getStateMatrix(plaintext):
         for j in range(4):
             state_matrix.append(bv[i*128+j*32:i*128+(j+1)*32])
         state_matrices.append(state_matrix)
-    return state_matrices
+    return (state_matrices, padding_length)
 
 
 def matrixSboxSubs(stateMatrix, Inv=False):
@@ -197,6 +200,36 @@ def addRoundKey(stateMatrix, roundKey):
         bv_key = roundKey[col_num]
         new_sm.append(bv_sm.__xor__(bv_key))
     return new_sm
+
+
+def readBits_and_GenSM(filename):
+    char_bit_vects = []
+    b = BitVector(filename = filename)
+    while (b.more_to_read):
+        bv_read = b.read_bits_from_file(8)
+        char_bit_vects.append(bv_read)
+    b.close_file_object()
+    sz = len(char_bit_vects)*8
+    padding_length = 0
+    if (sz%128 != 0):
+        upper_l = math.ceil(sz/128)
+        padding_length = (upper_l*128 - sz)//8
+        for x in range(padding_length):
+            char_bit_vects.append(BitVector(textstring='_'))
+    # merge into state matrix 
+    state_matrices = []
+    for i in range(len(char_bit_vects)//16):
+        state_matrix = []
+        for j in range(4):
+            lmt = char_bit_vects[i*16+j*4:i*16+(j+1)*4]
+            hex_str = ""
+            for bv in lmt:
+              hex_str += bv.get_bitvector_in_hex()
+            state_matrix.append(BitVector(hexstring = hex_str))
+        state_matrices.append(state_matrix)
+
+
+    return (state_matrices, padding_length)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@ from aes_utils import *
 
 def decrypt(cipherKey, cipherText):
   [keys, num_rounds] = keyExpansion(cipherKey)
-  state_matrices = getStateMatrix(cipherText)
+  (state_matrices, padding_length) = getStateMatrix(cipherText)
   decrypted_blocks = []
 
   for sm in state_matrices:
