@@ -15,20 +15,6 @@ def gcd(a, b):
         a, b = b, a%b
     return a 
 
-# def egcd(a, b):
-#     if a == 0:
-#         return (b, 0, 1)
-#     else:
-#         g, y, x = egcd(b % a, a)
-#         return (g, x - (b // a) * y, y)
-
-# def modinv(a, m):
-#     g, x, y = egcd(a, m)
-#     if g != 1:
-#         return -1
-#     else:
-#         return x % m
-
 
 def gen_prime(bit_length):
     is_prime_prob = 0.0

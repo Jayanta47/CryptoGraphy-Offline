@@ -10,7 +10,7 @@ rsa_meta = {
 
 k = int(input("Enter size of K: "))
 
-ans = int(input("Enter type of Input: 1. Plaintext 2. File"))
+ans = int(input("Enter type of Input: 1. Plaintext 2. File: "))
 
 if ans == 1:
     text = str(input("Enter Plaintext: ")).strip("\n")
