@@ -8,7 +8,7 @@ parameters = {
     'cipherKey' : "BUET CSE17 Batch Festival is one",
     'input_data' : {
         'type' : "file",
-        'filename' : 'pic2.png',
+        'filename' : 'text.txt',
         'plaintext' : "CanTheyDoTheirFest?"
     }
 }
