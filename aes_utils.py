@@ -1,4 +1,5 @@
 from cgitb import text
+import time
 from const_tables import *
 
 
@@ -53,6 +54,7 @@ def g(bv3, round):
 
 
 def keyExpansion(cipherKey):
+    start =  time.time()
     bv_cipherKey = BitVector(textstring = cipherKey)
     assert (bv_cipherKey.length() % 32 == 0)
 
@@ -79,6 +81,7 @@ def keyExpansion(cipherKey):
         else :
             key_pool.append(key_pool[i-N].__xor__(key_pool[i-1]))
     
+    end = time.time()
     key_mat = []
 
     assert(len(key_pool) == 4*(num_rounds + 1))
@@ -89,7 +92,7 @@ def keyExpansion(cipherKey):
             keys.append(key_mat.copy())
             key_mat.clear()
 
-    return [keys, num_rounds] 
+    return [keys, num_rounds, end-start] 
     
 
 def getStateMatrix(plaintext):

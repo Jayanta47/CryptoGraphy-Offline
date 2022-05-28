@@ -1,7 +1,8 @@
 from aes_utils import *
+import time 
 
 def encrypt(cipherKey, data):
-  [keys, num_rounds] = keyExpansion(cipherKey)
+  [keys, num_rounds, ex_time] = keyExpansion(cipherKey)
   if data['type'] == "file":
         filename = data['filename']
         (state_matrices, padding_length) = readBits_and_GenSM(filename)
@@ -10,11 +11,12 @@ def encrypt(cipherKey, data):
     (state_matrices, padding_length) = getStateMatrix(plainText)
   encrypted_blocks = []
 
-  print(len(state_matrices))
-  i = 0
+  # print(len(state_matrices))
+  # i = 0
+  start = time.time()
   for sm in state_matrices:
-    print(i)
-    i = i + 1
+    # print(i)
+    # i = i + 1
     stateMatrix = sm
     for round in range(num_rounds+1):
       if round == 0:
@@ -29,7 +31,8 @@ def encrypt(cipherKey, data):
         stateMatrix = mixColumn(stateMatrix)
         stateMatrix = addRoundKey(stateMatrix, keys[round])
     encrypted_blocks.append(stateMatrix)
-  return (encrypted_blocks, padding_length)
+  end = time.time()
+  return (encrypted_blocks, padding_length, ex_time, end-start)
 
 if __name__ == "__main__":
   (encrypted_blocks, padding_length) = encrypt("BUET CSE17 Batch", 'CanTheyDoTheirFe')
