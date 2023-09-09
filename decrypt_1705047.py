@@ -1,4 +1,4 @@
-from aes_utils import *
+from aes_utils_1705047 import *
 import time
 
 def decrypt(cipherKey, cipherText):
@@ -24,3 +24,21 @@ def decrypt(cipherKey, cipherText):
     decrypted_blocks.append(stateMatrix)
   end = time.time()
   return (decrypted_blocks, end-start)
+
+if __name__ == "__main__":
+  cipherKey = "BUET CSE17 Batch"
+  bv = BitVector(hexstring="27ddffcfcd41984de8423b847004badb")
+  cipherText = bv.get_bitvector_in_ascii()
+  print("Cipher Text: ", cipherText)
+
+  (decrypted_blocks, ex_time) = decrypt(cipherKey, cipherText)
+
+  decrypted_text = ""
+  temp_val = ""
+  for block in decrypted_blocks:
+      for col in block:
+          temp_val += ret_ASCII_val(col)
+      decrypted_text += temp_val
+      temp_val = ""
+
+  print("Decrypted Text: ", decrypted_text)

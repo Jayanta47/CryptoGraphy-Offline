@@ -1,6 +1,6 @@
-from rsa_encrypt import rsa_encrypt
-from rsa_decrypt import rsa_decrypt
-from rsa_utils import key_generation, readBits
+from rsa_encrypt_1705047 import rsa_encrypt
+from rsa_decrypt_1705047 import rsa_decrypt
+from rsa_utils_1705047 import key_generation, readBits
 
 
 rsa_meta = {

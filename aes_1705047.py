@@ -1,6 +1,6 @@
-from aes_utils import print_spaced_hex_val, ret_ASCII_val
-from encrypt import encrypt
-from decrypt import decrypt
+from aes_utils_1705047 import print_spaced_hex_val, ret_ASCII_val
+from encrypt_1705047 import encrypt
+from decrypt_1705047 import decrypt
 from BitVector import *
 
 parameters = {

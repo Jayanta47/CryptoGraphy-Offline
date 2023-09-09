@@ -1,10 +1,10 @@
 import socket
-import os
 import json
-from encrypt import encrypt
-from rsa_utils import key_generation, readBits
-from rsa_encrypt import rsa_encrypt
-from rsa_utils import ret_ASCII_val
+from encrypt_1705047 import encrypt
+from rsa_utils_1705047 import key_generation, readBits
+from rsa_encrypt_1705047 import rsa_encrypt
+from rsa_utils_1705047 import ret_ASCII_val
+import time 
 
 
 BUFFER_SIZE = 4096 # send 4096 bytes each time step
@@ -13,18 +13,6 @@ BUFFER_SIZE = 4096 # send 4096 bytes each time step
 host, port = "127.0.0.0" , 5001
 
 s = socket.socket()
-
-# filename = "text.txt"
-
-# filesize = os.path.getsize(filename)
-
-
-
-# print("filesize", filesize)
-# s.send(f"{filename}{SEPARATOR}{filesize}".encode())
-# acck = s.recv(BUFFER_SIZE).decode()
-
-# text = "CanTheyArrangeTheFest?also is it feasible for an outsider to interfere a proper investigation needs to be carried out at buckingham palace the big one"
 
 def send_json_message(json_message):
     s.sendall("JSON_INCOMING".encode("utf-8"))
@@ -67,24 +55,28 @@ if __name__ == "__main__":
     # k = int(input("Enter size of RSA key, K: "))
     # aes_key_length = int(input("AES Key Length: "))
     # aes_cipher_key = str(input("AES Cipher Key: ")).strip('\n')
-
-    k = 16
-    aes_key_length = 16
-    aes_cipher_key = "BUET CSE17 BATCH"
-
     # ans = int(input("Enter type of Input: 1. Plaintext 2. File :"))
-    text = ""
-    filename = ""
-
-    # text = "CanTheyDoTheirFe"
-    input_type = "file"
-    filename = "RSA_Report.pdf"
+    # text = ""
+    # filename = ""
     # if ans == 1:
     #     text = str(input("Enter Plaintext: ")).strip("\n")
     #     input_type = "plaintext"
     # else: 
-    #     filename = str(input("Enter Filename: "))
+    #     filename = str(input("Enter Filename: ")).strip("\n")
     #     input_type = "file"
+
+    k = 16
+    aes_key_length = 16
+    aes_cipher_key = "BUET CSE17 BATCH"
+    text = "CanTheyDoTheirFe"
+    input_type = "file"
+    filename = "pic2.png"
+
+    
+
+    
+
+    
 
     # resizing the aes keuy if it does not match the required size
 
@@ -96,6 +88,7 @@ if __name__ == "__main__":
 
     # RSA key generation 
     (public_key, private_key, time_) = key_generation(k)
+
     # encrypt the aes key 
     (ciphertext, enc_time) = rsa_encrypt(public_key, readBits(aes_cipher_key))
 
@@ -117,7 +110,7 @@ if __name__ == "__main__":
         'filename' : filename,
         'plaintext' : text
     })
-    print("done")
+
     # convert the encrypted blocks into encrypted text (ASCII form) 
     temp_val = ""
     encrypted_text = ""
@@ -146,13 +139,27 @@ if __name__ == "__main__":
     s.connect((host, port))
     print("[+] Connected.")
 
-
+    start = time.time()
     send_json_message (MetaData)
     sendASCIIstream (encrypted_text)
+    end = time.time()
 
     file_write_ack = s.recv(BUFFER_SIZE).decode()
     assert(file_write_ack == "DONE")
     s.sendall("END".encode("utf-8"))
+
+    if input_type == "text":
+        rec_file = open("DO_NOT_OPEN/decrypted_text.txt")
+        file_text = ""
+        for line in rec_file:
+            file_text += line
+        if (file_text == text):
+            print("Deciphered File Matches Successfully")
+
+    print("Execution Time: ")
+    print("Key Scheduling (seconds) :", ke_ex_time)
+    print("Encryption Time (seconds) :", enc_ex_time)
+    print("Data Transmission Time (seconds) :", end- start)
 
     s.close()
 

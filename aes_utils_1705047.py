@@ -1,6 +1,6 @@
-from cgitb import text
+
 import time
-from const_tables import *
+from const_tables_1705047 import *
 
 
 def print_spaced_hex_val(bv, bv_name=""):
@@ -47,29 +47,42 @@ def subWord(bv_w, Inv = False):
 def g(bv3, round):
     bv_new = bv3.deep_copy()
     bv_new << 8 # shift by one byte
+    # print_spaced_hex_val(bv_new, "g() return_bv")
     return_bv = subWord(bv_new)
+    # print_spaced_hex_val(return_bv, "g() return_bv")
     assert(round>0)
     return return_bv.__xor__(roundConst[round-1])
 
 
-
+# the input is the cipher key that is used for encryption
 def keyExpansion(cipherKey):
     start =  time.time()
+
+    # converting all the text into bit vector
     bv_cipherKey = BitVector(textstring = cipherKey)
+
+    # making sure that the key is a multiple of length 32
     assert (bv_cipherKey.length() % 32 == 0)
 
+    # N is the total number of columns/ words
     N = bv_cipherKey.length() // 32
+
+
     col_size = 32 # 32 bits 
     keys = []
 
     init_key = []
 
+    # convert the total text into chunks of 32 bits 
+    # for AES 128, total columns would be 4
+    # for AES 192, total columns would be 6 and so on 
     for i in range(N):
         init_key.append(bv_cipherKey[i*col_size: (i+1)*col_size])
 
-    
+    # determine the number of rounds corresponding to the cipher key length 
     num_rounds = 10 + int((bv_cipherKey.length()-128)/32)
 
+    # use the formula in the link to calculate the words of expanded key 
     key_pool = []
     for i in range(4*(num_rounds+1)):
         if (i < N):
@@ -92,6 +105,11 @@ def keyExpansion(cipherKey):
             keys.append(key_mat.copy())
             key_mat.clear()
 
+    # N.B. : the number of columns are different for different versions of 
+    # AES. But in all functions, only a group of 4 columns are used at a time
+    # so in 192, even if you deal with 6 columns at first and build the next columns on top
+    # of that, you would eventually break that up to take 4 columns at a time.
+    
     return [keys, num_rounds, end-start] 
     
 
@@ -237,4 +255,7 @@ def readBits_and_GenSM(filename):
 
 if __name__ == '__main__':
     # testing the utilities
-    pass 
+    # pass 
+    word = g(BitVector(hexstring='61746368'), 1)
+    print_spaced_hex_val(word)
+    print()

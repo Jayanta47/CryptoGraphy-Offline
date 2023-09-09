@@ -1,8 +1,14 @@
-from aes_utils import *
+from aes_utils_1705047 import *
 import time 
 
 def encrypt(cipherKey, data):
   [keys, num_rounds, ex_time] = keyExpansion(cipherKey)
+  # for key in keys:
+  #   for col in key:
+  #     print_spaced_hex_val(col)
+
+  #   print("")
+
   if data['type'] == "file":
         filename = data['filename']
         (state_matrices, padding_length) = readBits_and_GenSM(filename)
@@ -35,12 +41,18 @@ def encrypt(cipherKey, data):
   return (encrypted_blocks, padding_length, ex_time, end-start)
 
 if __name__ == "__main__":
-  (encrypted_blocks, padding_length) = encrypt("BUET CSE17 Batch", 'CanTheyDoTheirFe')
+  data = {
+        'type' : "text",
+        'filename' : "nothing",
+        'plaintext' : "CanTheyDoTheirFe"
+    }
+  (encrypted_blocks, padding_length, _, _) = encrypt("BUET CSE17 Batch", data)
 
   ascii_val = ""
   for block in encrypted_blocks:
     for col in block:
       print_spaced_hex_val(col)
+    # print("")
     print("\nASCII value: ", end="")
     for col in block:
       ascii_val += ret_ASCII_val(col)
